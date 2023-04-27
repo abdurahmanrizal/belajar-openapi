@@ -1,0 +1,438 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Todolist RESTful API",
+    "version": "1",
+    "description": "OpenAPI for todolist RESTful API",
+    "termsOfService": "https://www.kudureti.com",
+    "contact": {
+      "name": "Abdurahman",
+      "email": "abdurahmanrizal1@gmail.com",
+      "url": "https://www.kudureti.com"
+    },
+    "license": {
+      "name": "APACHE 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://{environment}.kudureti.com/api/v1",
+      "description": "TodoList RESTful API",
+      "variables": {
+        "environment": {
+          "default": "dev",
+          "description": "Server Environment",
+          "enum": ["dev", "qa", "prod"]
+        }
+      }
+    }
+  ],
+  "externalDocs": {
+    "url": "https://www.programmerzamannow.com",
+    "description": "Youtube Programmer Zaman Now"
+  },
+  "paths": {
+    "/todolist": {
+      "get": {
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+
+        "summary": "Get All todolist",
+        "tags": ["TodoList"],
+        "description": "Only will return active todolist, complete todolist or deleted todolist will be removed",
+        "parameters": [
+          {
+            "name": "include_one",
+            "required": false,
+            "description": "Is include done todolist",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true,
+              "default": false
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "description": "Filter todolist by name",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "examples": {
+              "java": {
+                "value": "java",
+                "description": "Example value for java"
+              },
+              "php": {
+                "value": "php",
+                "description": "Example value for php"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success get all todolist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArrayTodolist"
+                },
+                "examples": {
+                  "success": {
+                    "description": "Example success get all todolist",
+                    "value": [
+                      {
+                        "id": "1",
+                        "name": "Java",
+                        "priority": 1,
+                        "tags": ["Java", "Programming"]
+                      },
+                      {
+                        "id": "5",
+                        "name": "PHP",
+                        "priority": 2,
+                        "tags": ["PHP", "Programming"]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+        "summary": "Create new todolist",
+        "tags": ["TodoList"],
+        "description": "Create new active todolist",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrUpdateTodolist"
+              },
+              "examples": {
+                "java": {
+                  "value": {
+                    "name": "Belajar pemrograman Java",
+                    "priority": 1,
+                    "tags": ["Java", "Pemrograman"]
+                  }
+                },
+                "PHP": {
+                  "value": {
+                    "name": "Belajar pemrograman PHP",
+                    "priority": 2,
+                    "tags": ["PHP", "Pemrograman"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "success insert todolist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TodoList"
+                },
+                "examples": {
+                  "java": {
+                    "description": "success create java",
+                    "value": {
+                      "id": 1,
+                      "name": "Java",
+                      "priority": 1,
+                      "tags": ["Java", "Programming"]
+                    }
+                  },
+                  "PHP": {
+                    "description": "success create PHP",
+                    "value": {
+                      "id": 2,
+                      "name": "PHP",
+                      "priority": 2,
+                      "tags": ["Java", "Programming"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/todolist/{todolistID}": {
+      "put": {
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+        "summary": "Update existing todolist",
+        "tags": ["TodoList"],
+        "description": "Update existing todolist in database",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/TodolistId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrUpdateTodolist"
+              },
+              "examples": {
+                "java": {
+                  "value": {
+                    "name": "Belajar pemrograman Java",
+                    "priority": 1,
+                    "tags": ["Java", "Pemrograman"]
+                  }
+                },
+                "PHP": {
+                  "value": {
+                    "name": "Belajar pemrograman PHP",
+                    "priority": 2,
+                    "tags": ["PHP", "Pemrograman"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update todolist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "priority": {
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "java": {
+                    "description": "Success update todolist java",
+                    "value": {
+                      "id": "1",
+                      "name": "Java",
+                      "priority": 5,
+                      "tags": ["Java", "Programming", "Compiler"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+        "summary": "Delete existing todolist",
+        "tags": ["TodoList"],
+        "description": "Deleted existing todolist in database",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/TodolistId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success delete todolist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean",
+                  "properties": {
+                    "sucsess": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "description": "Success delete todolist",
+                    "value": {
+                      "success": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Failed delete todolist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "examples": {
+                  "failed": {
+                    "description": "Failed delete todolist",
+                    "value": {
+                      "success": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "failed": {
+                    "description": "Internal server error",
+                    "value": {
+                      "code": 500,
+                      "success": false,
+                      "message": "Internal server error cause query"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "TodolistId": {
+        "name": "todolistID",
+        "description": "Todolist ID for deleted",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "examples": {
+          "java": {
+            "description": "Sample todolist id for Java",
+            "value": "1"
+          },
+          "php": {
+            "description": "Sample todolist id for PHP",
+            "value": "2"
+          }
+        }
+      }
+    },
+    "schemas": {
+      "TodoList": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateOrUpdateTodolist": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ArrayTodolist": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/TodoList"
+        }
+      }
+    },
+    "securitySchemes": {
+      "TodolistAuth": {
+        "description": "Authentication for todolist RESTful API",
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  }
+}
